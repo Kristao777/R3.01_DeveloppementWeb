@@ -1,4 +1,6 @@
     </div>
-<footer>
-    <div class="fixed-bottom start-50">&copy; <?php echo date("Y"); ?> - IUT</div>
-</footer>
+    <footer>
+        <div class="fixed-bottom start-50">&copy; <?php echo date("Y"); ?> - IUT</div>
+    </footer>
+</body>
+</html>
