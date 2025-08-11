@@ -9,7 +9,7 @@ try
     $host = "localhost";
     $dbname = "lacosina";
     $user = "root";
-    $password = "root";
+    $password = "";
 
     // Création de la connexion PDO
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $password);
