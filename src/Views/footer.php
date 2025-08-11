@@ -1,4 +1,4 @@
     </div>
 <footer>
-    <div>&copy; 2024 - IUT</div>
+    <div class="fixed-bottom start-50">&copy; <?php echo date("Y"); ?> - IUT</div>
 </footer>
