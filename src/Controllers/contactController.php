@@ -26,7 +26,7 @@ class ContactController {
         
         if($ajoutOk) {
             // redirection vers la vue d'enregistrement effectué
-            require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Contact' .DIRECTORY_SEPARATOR.'enregistrementContact.php');
+            require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Contact' .DIRECTORY_SEPARATOR.'enregistrement.php');
         } else {
             echo 'Erreur lors de l\'enregistrement du contact.';
         }

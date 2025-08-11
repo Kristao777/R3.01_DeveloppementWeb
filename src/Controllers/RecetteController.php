@@ -34,7 +34,7 @@ class RecetteController {
     }
 
     // Fonction permettant de lister les recettes
-    function lister($pdo) {
+    function index($pdo) {
         // préparation de la requête d'insertion dans la base de données
 
         /** @var PDO $pdo **/
