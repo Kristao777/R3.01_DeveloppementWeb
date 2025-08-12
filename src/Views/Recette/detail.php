@@ -6,6 +6,6 @@
 </div>
 <p></p>
 <?php if(isset($_SESSION['identifiant'])) {?>
-    <a href="?c=modif&id=<?php echo $recipe['id'];?>" class="btn btn-primary">Modifier la recette</a>
+    <a href="?c=Recette&a=modif&id=<?php echo $recipe['id'];?>" class="btn btn-primary">Modifier la recette</a>
 <?php } ?>
-<a href="?c=liste" class="btn btn-primary">Retour à la liste des recettes</a>
+<a href="?c=Recette&a=index" class="btn btn-primary">Retour à la liste des recettes</a>

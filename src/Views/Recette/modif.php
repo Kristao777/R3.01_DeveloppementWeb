@@ -1,5 +1,5 @@
 <h1>Modifier la recette : <?php echo $recipe['titre']; ?></h1>
-<form action="?c=enregistrer&id=<?php echo $recipe['id']; ?>" method="post" enctype="multipart/form-data">
+<form action="?c=Recette&a=enregistrer&id=<?php echo $recipe['id']; ?>" method="post" enctype="multipart/form-data">
     <div class="mb-3">
         <label for="titre" class="form-label">Titre de la recette</label>
         <input type="text" class="form-control" value="<?php echo $recipe['titre']; ?>" name="titre" id="titre" required>
