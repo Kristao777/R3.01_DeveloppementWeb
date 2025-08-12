@@ -1,6 +1,6 @@
 <h1>Formulaire de contact</h1>
 
-<form action="?c=contacter" method="post">
+<form action="?c=Contact&a=enregistrer" method="post">
     <div class="mb-3">
         <label for="nom" class="form-label">Votre nom</label>
         <input type="text" class="form-control" name="nom" id="nom" required>

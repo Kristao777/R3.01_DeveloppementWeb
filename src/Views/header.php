@@ -15,16 +15,16 @@
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href='?c=home'>Accueil<!--<i class="fa-solid fa-house"></i>--></a>
+                <a class="nav-link" href='?c=home'>Accueil</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href='?c=liste'>Recettes</a>
+                <a class="nav-link" href='?c=Recette&a=index'>Recettes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href='?c=contact'>Contact</a>
+                <a class="nav-link" href='?c=Contact&a=ajouter'>Contact</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href='?c=ajout'>Ajouter une recette</a>
+                <a class="nav-link" href='?c=Recette&a=ajouter'>Ajouter une recette</a>
             </li>
         </ul>
     </nav>

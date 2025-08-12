@@ -13,41 +13,54 @@
     require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR.'header.php');
 
     // mise en place de la route actuelle
-    $route = isset($_GET['c'])? $_GET['c'] : 'home';
+    $controller = isset($_GET['c'])? $_GET['c'] : 'home';
+    $action = isset($_GET['a'])? $_GET['a'] : 'index';
     
     // définition des routes disponibles
-    switch ($route) {
+    switch ($controller) {
+
+        // route pour la gestion des recettes
+        case 'Recette':
+            $recetteController = new RecetteController();
+            switch ($action) {
+                case 'index':
+                    $recetteController->index($pdo);
+                    break;
+                case 'ajouter':
+                    $recetteController->ajouter();
+                    break;
+                case 'enregistrer':
+                    $recetteController->enregistrer($pdo);
+                    break;
+                case 'detail':
+                    $recetteController->detail($pdo, isset($_GET['id']) ? $_GET['id'] : null);
+                    break;
+                case 'modif':
+                    $recetteController->modifier($pdo, isset($_GET['id']) ? $_GET['id'] : null);
+                    break;
+                default:
+                    echo "Action non trouvée";
+            }
+            break;
+        // route pour la gestion des contacts
+        case 'Contact':
+            $contactController = new ContactController();
+            switch ($action) {
+                case 'ajouter':
+                    $contactController->ajouter();
+                    break;
+                case 'enregistrer':
+            $contactController->enregister($pdo);
+            break;
+                default:
+                    echo "Action non trouvée";
+            }
+            break;
+        // route pour la page d'accueil
         case 'home':
             require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'homeController.php');
             break;
-        case 'contact':
-            $contactController = new ContactController();
-            $contactController->ajouter();
-            break;
-        case 'ajout':
-            $recetteController = new RecetteController();
-            $recetteController->ajouter();
-            break;
-        case 'modif':
-            $recetteController = new RecetteController();
-            $recetteController->modifier($pdo);
-            break;
-        case 'enregistrer':
-            $recetteController = new RecetteController();
-            $recetteController->enregistrer($pdo);
-            break;
-        case 'contacter':
-            $contactController = new ContactController();
-            $contactController->enregister($pdo);
-            break;
-        case 'liste':
-            $recetteController = new RecetteController();
-            $recetteController->lister($pdo);
-            break;
-        case 'detail':
-            $recetteController = new RecetteController();
-            $recetteController->detail($pdo,$_GET['id']);
-            break;
+        // route par défaut
         default:
             echo "Page non trouvée";
     }
