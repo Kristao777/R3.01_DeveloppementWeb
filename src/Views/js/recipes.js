@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         recipe.addEventListener('click', (event) => {
             event.preventDefault(); // Empêche le comportement par défaut
-            fetch('?c=favori&id='+recipe.dataset.id)
+            fetch('?c=Favori&a=ajouter&id='+recipe.dataset.id)
             .then(function() {
                 location.reload();
             });
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault(); // Empêche le comportement par défaut
             let recipeId = recipe.dataset.id; // Récupère l'ID de la recette
             //alert(`Détail de la recette : ${recipeId}`); // Affiche une alerte avec l'ID
-            window.open('?c=detail&id=' + recipeId,'_self'); // Ouvre le détail de la recette
+            window.open('?c=Recette&a=detail&id=' + recipeId,'_self'); // Ouvre le détail de la recette
         });
     
     });

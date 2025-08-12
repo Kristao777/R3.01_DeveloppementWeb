@@ -30,7 +30,7 @@ class FavoriController {
         }
 
         // redirection vers la page de la recette pour afficher un message de confirmation
-        header('Location: ?c=detail&id='. $id_recette);
+        header('Location: ?c=Recette&a=detail&id='. $id_recette);
 
     }
 
