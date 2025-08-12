@@ -4,6 +4,9 @@
     <!-- Boucle permettant de lister les recettes -->
     <?php foreach ($recipes as $recipe) : ?>
         <div class="col-4 p-2">
+            <?php if(isset($_SESSION['identifiant'])) {?> 
+                <a href="?c=Recette&a=modifier&id=<?php echo $recipe['id']; ?>"><i class="bi bi-pencil-square"></i></a>
+            <?php } ?>
             <!-- Utilisation des Cards Bootstrap -->
             <div class="recipe card" data-id="<?php echo $recipe['id']; ?>">
                 <div class="card-body">
