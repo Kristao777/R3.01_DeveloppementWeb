@@ -13,4 +13,4 @@
         <a href="?c=Favori&a=ajouter&id=<?php echo $recipe['id'];?>" class="btn btn-primary">Retirer des favoris</a>
     <?php }?>
 <?php } ?>
-<a href="?c=liste" class="btn btn-primary">Retour à la liste des recettes</a>
+<a href="?c=Recette&a=index" class="btn btn-primary">Retour à la liste des recettes</a>
