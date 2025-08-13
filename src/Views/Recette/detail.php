@@ -5,5 +5,5 @@
     Auteur : <a href="mailto:<?php echo $recipe['auteur']; ?>"><?php echo $recipe['auteur']; ?></a></div>
 </div>
 <p></p>
-<a href="?c=Recette&a=modif&id=<?php echo $recipe['id'];?>" class="btn btn-primary">Modifier la recette</a>
+<a href="?c=Recette&a=modifier&id=<?php echo $recipe['id'];?>" class="btn btn-primary">Modifier la recette</a>
 <a href="?c=Recette&a=index" class="btn btn-primary">Retour à la liste des recettes</a>
