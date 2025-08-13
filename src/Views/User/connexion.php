@@ -1,5 +1,5 @@
 <h1>Connexion</h1>
-<form action="?c=connecter" method="post">
+<form action="?c=User&a=connecter" method="post">
     <div class="mb-3">
         <label for="identifiant" class="form-label">Identifiant</label>
         <input type="text" class="form-control" name="identifiant" id="identifiant" required>

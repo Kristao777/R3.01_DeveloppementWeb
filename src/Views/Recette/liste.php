@@ -5,7 +5,7 @@
     <?php foreach ($recipes as $recipe) : ?>
         <div class="col-4 p-2">
             <?php if(isset($_SESSION['identifiant'])) {?> 
-                <a href="?c=modif&id=<?php echo $recipe['id']; ?>"><i class="bi bi-pencil-square"></i></a>
+                <a href="?c=Recette&a=modifier&id=<?php echo $recipe['id']; ?>"><i class="bi bi-pencil-square"></i></a>
                 <?php $favorisController = new FavoriController(); ?>
                 <?php $existe = $favorisController->existe($pdo,$recipe['id'],$_SESSION['id']); ?>
                 <?php if(!$existe) { ?>
@@ -14,7 +14,7 @@
                     <span class="recipefav"  data-id="<?php echo $recipe['id']; ?>" title="Retirer des favoris"><i class="bi bi-heart-fill"></i></span>
                 <?php } ?>
                 <?php if($_SESSION['isAdmin']) : ?>
-                    <a href="?c=supprimerRecette&id=<?php echo $recipe['id']; ?>"><i class="bi bi-trash"></i></a>
+                    <a href="?c=Recette&a=supprimer&id=<?php echo $recipe['id']; ?>"><i class="bi bi-trash"></i></a>
                 <?php endif;?>
             <?php } ?>
             <!-- Utilisation des Cards Bootstrap -->
