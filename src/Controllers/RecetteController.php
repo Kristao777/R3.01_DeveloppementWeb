@@ -1,6 +1,14 @@
 <?php
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Recette.php';
+
 class RecetteController {
+
+    private $recetteModel;
+
+    public function __construct() {
+        $this->recetteModel = new Recette();
+    }
 
     // Fonction permettant d'ajouter une nouvelle recette
     function ajouter() {
@@ -8,23 +16,15 @@ class RecetteController {
     }
 
     // Fonction permettant d'enregistrer une nouvelle recette
-    function enregistrer($pdo) {
+    function enregistrer() {
         // récupération des données de formulaire
         $titre = $_POST['titre'];
         $description = $_POST['description'];
         $auteur = $_POST['auteur'];
 
         // préparation de la requête d'insertion dans la base de données
+        $ajoutOk = $this->recetteModel->add($titre, $description, $auteur);
 
-        /** @var PDO $pdo **/
-        $requete = $pdo->prepare('INSERT INTO recettes (titre, description, auteur, date_creation) VALUES (:titre, :description, :auteur, NOW())');
-        $requete->bindParam(':titre', $titre);
-        $requete->bindParam(':description', $description);
-        $requete->bindParam(':auteur', $auteur);
-
-        // exécution de la requête
-        $ajoutOk = $requete->execute();
-        
         if($ajoutOk) {
             // redirection vers la vue d'enregistrement effectué
             require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' .DIRECTORY_SEPARATOR.'enregistrement.php');
@@ -34,15 +34,10 @@ class RecetteController {
     }
 
     // Fonction permettant de lister les recettes
-    function index($pdo) {
+    function index() {
         // préparation de la requête d'insertion dans la base de données
 
-        /** @var PDO $pdo **/
-        $requete = $pdo->prepare("SELECT * FROM recettes");
-        
-        // exécution de la requête et récupération des données
-        $requete->execute();
-        $recipes = $requete->fetchAll(PDO::FETCH_ASSOC);
+        $recipes = $this->recetteModel->findAll();
 
         require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR .'liste.php');
     }
