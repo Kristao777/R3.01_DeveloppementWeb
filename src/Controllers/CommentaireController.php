@@ -1,6 +1,6 @@
 <?php
 
-class CommentController {
+class CommentaireController {
 
     function ajouter($pdo, $id_recette) {
 

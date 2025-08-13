@@ -1,27 +1,36 @@
 <?php
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Recette.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Favori.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Commentaire.php';
+
+
 class RecetteController {
+
+    private $recetteModel;
+    private $favoriModel;
+    private $commentaireModel;
+
+    public function __construct() {
+        $this->recetteModel = new Recette();
+        $this->favoriModel = new Favori();
+        $this->commentaireModel = new Commentaire();
+    }
 
     // Fonction permettant d'ajouter une nouvelle recette
     function ajouter() {
         require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'Recette' . DIRECTORY_SEPARATOR . 'ajout.php';
     }
 
-    function modifier($pdo) {
+    function modifier() {
 
-        /** @var PDO $pdo **/
-        $requete = $pdo->prepare("SELECT * FROM recettes WHERE id = :id");
-        $requete->bindParam(':id', $_GET['id']);
-        
-        // exécution de la requête et récupération des données
-        $requete->execute();
-        $recipe = $requete->fetch(PDO::FETCH_ASSOC);
+        $recipe = $this->recetteModel->find($_GET['id']);
 
         require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'Recette' . DIRECTORY_SEPARATOR . 'modif.php';
     }
 
     // Fonction permettant d'enregistrer une nouvelle recette
-    function enregistrer($pdo) {
+    function enregistrer() {
 
         // récupération des données de formulaire
         $titre = $_POST['titre'];
@@ -31,10 +40,7 @@ class RecetteController {
         // l'ancienne image est conservée si aucune n'a été choisie
         // sinon, une nouvelle image est créée (erreur 4 = image non choisie)
         if($_FILES['image']['error'] == 4) {
-            $requete = $pdo->prepare("SELECT * FROM recettes WHERE id = :id");
-            $requete->bindParam(':id', $_GET['id']);
-            $requete->execute();
-            $recipe = $requete->fetch(PDO::FETCH_ASSOC);
+            $recipe = $this->recetteModel->find($_GET['id']);
             $image = $recipe['image'];
         } else {
             $image = $_FILES['image']['name'];
@@ -46,22 +52,13 @@ class RecetteController {
         // préparation de la requête d'insertion dans la base de données
 
         // création ou modification d'une recette
-        /** @var PDO $pdo **/
         if (isset($_GET['id'])) {
             // modification d'une recette
-            $requete = $pdo->prepare("UPDATE recettes SET titre = :titre, description = :description, auteur = :auteur, image = :image WHERE id = :id");
-            $requete->bindParam(':id', $_GET['id']);
+            $ajoutOk = $this->recetteModel->update($_GET['id'], $titre, $description, $auteur, $image);
         } else {
             // création d'une nouvelle recette
-            $requete = $pdo->prepare("INSERT INTO recettes (titre, description, auteur, image, date_creation) VALUES (:titre, :description, :auteur, :image, NOW())");
+            $ajoutOk = $this->recetteModel->add($titre, $description, $auteur, $image);
         }
-        $requete->bindParam(':titre', $titre);
-        $requete->bindParam(':description', $description);
-        $requete->bindParam(':auteur', $auteur);
-        $requete->bindParam(':image', $image);
-
-        // exécution de la requête
-        $ajoutOk = $requete->execute();
         
         if($ajoutOk) {
             // redirection vers la vue d'enregistrement effectué
@@ -72,44 +69,31 @@ class RecetteController {
     }
 
     // Fonction permettant de lister les recettes
-    function index($pdo) {
+    function index() {
         // préparation de la requête d'insertion dans la base de données
-
-        /** @var PDO $pdo **/
-        $requete = $pdo->prepare("SELECT * FROM recettes");
-        
-        // exécution de la requête et récupération des données
-        $requete->execute();
-        $recipes = $requete->fetchAll(PDO::FETCH_ASSOC);
+        $recipes = $this->recetteModel->findAll();
 
         require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR .'liste.php');
     }
 
-    function detail($pdo, $id) {
+    function detail($id) {
 
         // Ajout du contrôleur des favoris
         $favoriController = new FavoriController();
         $existe = $favoriController->existe($pdo, $id, isset($_SESSION['id']) ? $_SESSION['id']:null);
         
         // préparation de la requête de sélection dans la base de données
-
-        /** @var PDO $pdo **/
-        $requete = $pdo->prepare("SELECT * FROM recettes WHERE id = :id");
-        $requete->bindParam(':id', $id);
-        
-        // exécution de la requête et récupération des données
-        $requete->execute();
-        $recipe = $requete->fetch(PDO::FETCH_ASSOC);
+        $recipe = $this->recetteModel->find($id);
 
         // Ajout des commentaires
-        $commentaireController = new CommentController();
+        $commentaireController = new CommentaireController();
         $commentaires = $commentaireController->lister($pdo, $id);
 
         require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR .'detail.php');
     }
 
     // Fonction permettant de supprimer une recette
-    function supprimer($pdo, $id) {
+    function supprimer($id) {
 
         // Suppression des favoris liés à la recette
         $requete = $pdo->prepare("DELETE FROM favoris WHERE recette_id = :id");
