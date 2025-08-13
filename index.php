@@ -40,7 +40,7 @@
                 case 'detail':
                     $recetteController->detail($pdo, isset($_GET['id']) ? $_GET['id'] : null);
                     break;
-                case 'modif':
+                case 'modifier':
                     $recetteController->modifier($pdo, isset($_GET['id']) ? $_GET['id'] : null);
                     break;
                 default:
