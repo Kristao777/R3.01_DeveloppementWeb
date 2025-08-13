@@ -1,5 +1,5 @@
 <h1>Inscription</h1>
-<form action="?c=inscrire" method="post">
+<form action="?c=User&a=inscrire" method="post">
     <div class="mb-3">
         <label for="identifiant" class="form-label">Identifiant</label>
         <input type="text" class="form-control" name="identifiant" id="identifiant" required>

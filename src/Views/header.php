@@ -20,10 +20,10 @@
                 <a class="nav-link" href='?c=home'>Accueil</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href='?c=liste'>Recettes</a>
+                <a class="nav-link" href='?c=Recette&a=index'>Recettes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href='?c=contact'>Contact</a>
+                <a class="nav-link" href='?c=Contact&a=ajouter'>Contact</a>
             </li>
             <?php if(isset($_SESSION['identifiant'])) {?>
                 <div class="vr"></div>                        
@@ -32,9 +32,9 @@
                         Bienvenue <?php echo $_SESSION['identifiant'];?>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-link" href='?c=profil'>Mon profil</a></li>
-                        <li><a class="nav-link" href='?c=ajout'>Ajouter une recette</a></li>
-                        <li><a class="nav-link" href='?c=mesFavoris'>Mes recettes favorites</a></li>
+                        <li><a class="nav-link" href='?c=User&a=profil'>Mon profil</a></li>
+                        <li><a class="nav-link" href='?c=Recette&a=ajout'>Ajouter une recette</a></li>
+                        <li><a class="nav-link" href='?c=Favori&a=mesFavoris'>Mes recettes favorites</a></li>
                     </ul>
                 </li>
             <?php } ?>
@@ -42,14 +42,14 @@
         <ul class="navbar-nav">
             <?php if(isset($_SESSION['identifiant'])) { ?>
                 <li class="nav-item">
-                    <a class="btn btn-outline-dark" href='?c=deconnexion'>Déconnexion</a>
+                    <a class="btn btn-outline-dark" href='?c=User&a=deconnexion'>Déconnexion</a>
                 </li>
             <?php } else { ?>
                 <li class="nav-item">
-                    <a class="btn btn-outline-dark" href='?c=inscription'>Inscription</a>
+                    <a class="btn btn-outline-dark" href='?c=User&a=inscription'>Inscription</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-outline-dark" href='?c=connexion'>Connexion</a>
+                    <a class="btn btn-outline-dark" href='?c=User&a=connexion'>Connexion</a>
                 </li>
             <?php } ?>
         </ul>

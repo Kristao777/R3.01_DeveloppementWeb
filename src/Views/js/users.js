@@ -32,13 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let id_utilisateur = divFavoris.dataset.id; // Remplacer par l'ID de l'utilisateur
 
-        fetch("?c=getFavoris&x&id="+id_utilisateur)
+        fetch("?c=Favori&a=getFavoris&x&id="+id_utilisateur)
         .then(response => response.json())
         .then(response => {
             JSON.stringify(response);
             divFavoris.innerHTML = "<ul>";
             divFavoris.innerHTML += response.map(favori => {
-                return "<li><a href='?c=detail&id="+favori.id+"'>"+favori.titre+"</a></li>";
+                return "<li><a href='?c=Recette&a=detail&id="+favori.id+"'>"+favori.titre+"</a></li>";
             }).join("");
             divFavoris.innerHTML += "</ul>";
         })
