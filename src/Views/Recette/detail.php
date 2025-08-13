@@ -6,7 +6,7 @@
 </div>
 <p></p>
 <?php if(isset($_SESSION['identifiant'])) {?>
-    <a href="?c=Recette&a=modif&id=<?php echo $recipe['id'];?>" class="btn btn-primary">Modifier la recette</a>
+    <a href="?c=Recette&a=modifier&id=<?php echo $recipe['id'];?>" class="btn btn-primary">Modifier la recette</a>
     <?php if(!$existe) {?>
         <a href="?c=Favori&a=ajouter&id=<?php echo $recipe['id'];?>" class="btn btn-primary">Ajouter aux favoris</a>
     <?php } else {?>
