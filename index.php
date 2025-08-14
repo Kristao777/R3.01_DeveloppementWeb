@@ -14,9 +14,6 @@
     // import de la classe FavoriController
     require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'FavoriController.php');
     
-    // connexion à la base de données
-    require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Models'.DIRECTORY_SEPARATOR.'connectDb.php');
-    
     // ajout de l'en tête
     if(!isset($_GET["x"])) require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR.'header.php');
 
@@ -33,19 +30,19 @@
             $recetteController = new RecetteController();
             switch ($action) {
                 case 'index':
-                    $recetteController->index($pdo);
+                    $recetteController->index();
                     break;
                 case 'ajouter':
                     $recetteController->ajouter();
                     break;
                 case 'enregistrer':
-                    $recetteController->enregistrer($pdo);
+                    $recetteController->enregistrer();
                     break;
                 case 'detail':
-                    $recetteController->detail($pdo, isset($_GET['id']) ? $_GET['id'] : null);
+                    $recetteController->detail(isset($_GET['id']) ? $_GET['id'] : null);
                     break;
                 case 'modifier':
-                    $recetteController->modifier($pdo, isset($_GET['id']) ? $_GET['id'] : null);
+                    $recetteController->modifier(isset($_GET['id']) ? $_GET['id'] : null);
                     break;
                 default:
                     echo "Action non trouvée";
@@ -59,7 +56,7 @@
                     $contactController->ajouter();
                     break;
                 case 'enregistrer':
-            $contactController->enregister($pdo);
+            $contactController->enregister();
             break;
         default:
                     echo "Action non trouvée";
@@ -73,16 +70,16 @@
                     $userController->inscription();
                     break;
                 case 'inscrire':
-                    $userController->enregistrer($pdo);
+                    $userController->enregistrer();
                     break;
                 case 'connexion':
                     $userController->connexion();
                     break;
                 case 'connecter':
-                    $userController->verifieConnexion($pdo);
+                    $userController->verifieConnexion();
                     break;
                 case 'profil':
-                    $userController->profil($pdo);
+                    $userController->profil();
                     break;
                 case 'deconnexion':
                     $userController->deconnexion();
@@ -98,7 +95,7 @@
             switch ($action) {
                 case 'ajouter':
                     $favoriController = new FavoriController();
-                    $favoriController->ajouter($pdo, $_GET['id']);
+                    $favoriController->ajouter($_GET['id']);
                     break;
                 case 'mesFavoris':
                     $favoriController = new FavoriController();
@@ -106,7 +103,7 @@
                     break;
                 case 'getFavoris':
                     $favoriController = new FavoriController();
-                    $favoriController->getFavoris($pdo, $_GET['id']);
+                    $favoriController->getFavoris($_GET['id']);
                     break;
                 default:
                     echo "Page non trouvée";
