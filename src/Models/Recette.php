@@ -38,23 +38,25 @@ class Recette {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function add($titre, $description, $auteur) {
-        $query = "INSERT INTO recettes (titre, description, auteur) VALUES (:titre, :description, :auteur)";
+    public function add($titre, $description, $auteur, $image) {
+        $query = "INSERT INTO recettes (titre, description, auteur, image, date_creation) VALUES (:titre, :description, :auteur, :image , NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':titre', $titre);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':auteur', $auteur);
+        $stmt->bindParam(':image', $image);
         $stmt->execute();
         return $this->conn->lastInsertId();
     }
 
-    public function update($id, $titre, $description, $auteur) {
-        $query = "UPDATE recettes SET titre = :titre, description = :description, auteur = :auteur WHERE id = :id";
+    public function update($id, $titre, $description, $auteur, $image) {
+        $query = "UPDATE recettes SET titre = :titre, description = :description, auteur = :auteur, image = :image WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':titre', $titre);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':auteur', $auteur);
+        $stmt->bindParam(':image', $image);
         $stmt->execute();
         return $stmt->rowCount() > 0;
     }

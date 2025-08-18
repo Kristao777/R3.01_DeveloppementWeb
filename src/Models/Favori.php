@@ -38,7 +38,7 @@ class Favori {
     }
 
     public function add($userId, $recetteId) {
-        $query = "INSERT INTO favoris (user_id, recette_id) VALUES (:userId, :recetteId)";
+        $query = "INSERT INTO favoris (user_id, recette_id, create_time) VALUES (:userId, :recetteId, NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':userId', $userId);
         $stmt->bindParam(':recetteId', $recetteId);

@@ -37,7 +37,7 @@ class User {
     }
 
     public function add($identifiant, $password, $mail) {
-        $query = "INSERT INTO users (identifiant, password, mail) VALUES (:identifiant, :password, :mail)";
+        $query = "INSERT INTO users (identifiant, password, mail, create_time) VALUES (:identifiant, :password, :mail, NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':identifiant', $identifiant);
         $stmt->bindParam(':password', password_hash($password, PASSWORD_BCRYPT));
