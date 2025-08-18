@@ -24,7 +24,7 @@
     $controller = isset($_GET['c'])? $_GET['c'] : 'home';
     $action = isset($_GET['a'])? $_GET['a'] : 'index';
     
-// définition des routes disponibles
+    // définition des routes disponibles
     switch ($controller) {
 
         // route pour la gestion des recettes
@@ -45,6 +45,9 @@
                     break;
                 case 'modifier':
                     $recetteController->modifier(isset($_GET['id']) ? $_GET['id'] : null);
+                    break;
+                case 'supprimer':
+                    $recetteController->supprimer(isset($_GET['id']) ? $_GET['id'] : null);
                     break;
                 default:
                     echo "Action non trouvée";

@@ -33,7 +33,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="nav-link" href='?c=User&a=profil'>Mon profil</a></li>
-                        <li><a class="nav-link" href='?c=Recette&ajouter'>Ajouter une recette</a></li>
+                        <li><a class="nav-link" href='?c=Recette&a=ajouter'>Ajouter une recette</a></li>
                         <li><a class="nav-link" href='?c=Favori&a=mesFavoris'>Mes recettes favorites</a></li>
                         <?php if($_SESSION['isAdmin']) {?>
                             <li><a class="nav-link" href='?c=Commentaire&a=lister'>Liste des commentaires</a></li>

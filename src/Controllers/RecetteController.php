@@ -96,31 +96,25 @@ class RecetteController {
     function supprimer($id) {
 
         // Suppression des favoris liés à la recette
-        $requete = $pdo->prepare("DELETE FROM favoris WHERE recette_id = :id");
-        $requete->bindParam(':id', $id);
-        
-        // exécution de la requête
-        $suppressionOk = $requete->execute();
-
+        $favoris = $this->favoriModel->findBy(['recette_id' => $id]);
+        foreach ($favoris as $favori) {
+            $this->favoriModel->delete($favori['id']);
+        }
         // Suppression des commentaires liés à la recette
-        $requete = $pdo->prepare("DELETE FROM comments WHERE recette_id = :id");
-        $requete->bindParam(':id', $id);
-        
-        // exécution de la requête
-        $suppressionOk = $requete->execute();
-
+        $comments = $this->commentaireModel->findBy(['recette_id' => $id]);
+        foreach ($comments as $comment) {
+            $this->commentaireModel->delete($comment['id']);
+        }
         // préparation de la requête de suppression dans la base de données
-        $requete = $pdo->prepare("DELETE FROM recettes WHERE id = :id");
-        $requete->bindParam(':id', $id);
-        
-        // exécution de la requête
-        $suppressionOk = $requete->execute();
-        
+        $suppressionOk = $this->recetteModel->delete($id);
+
+        // Si la suppression est réussie, on redirige vers la liste des recettes
+        // Sinon, on affiche un message d'erreur
         if($suppressionOk) {
             $_SESSION['message'] = ['success' => 'Recette supprimée avec succès'];
 
             // redirection vers la vue de suppression effectuée
-            require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR.'liste.php');
+            header('Location: ?c=Recette&a=index');
         } else {
             $_SESSION['message'] = ['danger' => 'Erreur dans la suppression de la recette'];;
         }

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . 'Database.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'Database.php';
 
 class Commentaire {
     private $conn;
@@ -11,14 +11,14 @@ class Commentaire {
     }
 
     public function findAll() {
-        $query = "SELECT * FROM commentaires";
+        $query = "SELECT * FROM comments";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function find($id) {
-        $query = "SELECT * FROM commentaires WHERE id = :id";
+        $query = "SELECT * FROM comments WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
@@ -26,7 +26,7 @@ class Commentaire {
     }
 
     public function findBy($params) {
-        $query = "SELECT * FROM commentaires WHERE " . implode(' AND ', array_map(function($key) {
+        $query = "SELECT * FROM comments WHERE " . implode(' AND ', array_map(function($key) {
             return "$key = :$key";
         }, array_keys($params)));
         $stmt = $this->conn->prepare($query);
@@ -38,7 +38,7 @@ class Commentaire {
     }
 
     public function add($pseudo, $recetteId, $commentaire) {
-        $query = "INSERT INTO commentaires (pseudo, recette_id, commentaire) VALUES (:pseudo, :recetteId, :commentaire)";
+        $query = "INSERT INTO comments (pseudo, recette_id, commentaire, create_time) VALUES (:pseudo, :recetteId, :commentaire, NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':pseudo', $pseudo);
         $stmt->bindParam(':recetteId', $recetteId);
@@ -48,7 +48,7 @@ class Commentaire {
     }
 
     public function update($id, $pseudo, $recetteId, $commentaire) {
-        $query = "UPDATE commentaires SET pseudo = :pseudo, recette_id = :recetteId, commentaire = :commentaire WHERE id = :id";
+        $query = "UPDATE comments SET pseudo = :pseudo, recette_id = :recetteId, commentaire = :commentaire WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':pseudo', $pseudo);
@@ -59,7 +59,7 @@ class Commentaire {
     }
 
     public function delete($id) {
-        $query = "DELETE FROM commentaires WHERE id = :id";
+        $query = "DELETE FROM comments WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();

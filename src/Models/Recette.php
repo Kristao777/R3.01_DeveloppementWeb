@@ -39,7 +39,7 @@ class Recette {
     }
 
     public function add($titre, $description, $auteur, $image) {
-        $query = "INSERT INTO recettes (titre, description, auteur, image) VALUES (:titre, :description, :auteur, :image)";
+        $query = "INSERT INTO recettes (titre, description, auteur, image, date_creation) VALUES (:titre, :description, :auteur, :image , NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':titre', $titre);
         $stmt->bindParam(':description', $description);
