@@ -38,7 +38,7 @@ class Contact {
     }
 
     public function add($nom, $mail, $description) {
-        $query = "INSERT INTO contacts (nom, mail, description) VALUES (:nom, :mail, :description)";
+        $query = "INSERT INTO contacts (nom, mail, description, create_time) VALUES (:nom, :mail, :description, NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':nom', $nom);
         $stmt->bindParam(':mail', $mail);
