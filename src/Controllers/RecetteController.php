@@ -80,14 +80,14 @@ class RecetteController {
 
         // Ajout du contrôleur des favoris
         $favoriController = new FavoriController();
-        $existe = $favoriController->existe($pdo, $id, isset($_SESSION['id']) ? $_SESSION['id']:null);
+        $existe = $favoriController->existe($id, isset($_SESSION['id']) ? $_SESSION['id']:null);
         
         // préparation de la requête de sélection dans la base de données
         $recipe = $this->recetteModel->find($id);
 
         // Ajout des commentaires
         $commentaireController = new CommentaireController();
-        $commentaires = $commentaireController->lister($pdo, $id);
+        $commentaires = $commentaireController->lister($id);
 
         require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR .'detail.php');
     }

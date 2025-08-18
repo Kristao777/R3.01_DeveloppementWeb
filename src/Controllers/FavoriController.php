@@ -1,32 +1,43 @@
 <?php
 
+require_once __DIR__  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Favori.php';
+require_once __DIR__  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Recette.php';
+
 class FavoriController {
 
-    function ajouter($pdo, $id_recette) {
+    private $favoriModel;
+    private $recetteModel;
+
+    public function __construct() {
+        $this->favoriModel = new Favori();
+        $this->recetteModel = new Recette();
+    }
+ 
+    function ajouter($id_recette) {
         // récupération de l'id de l'utilisateur connecté
         $id_utilisateur = $_SESSION['id'];
         
         // vérification si l'utilisateur a déjà ajouté cette recette à ses favoris
-        $requete = $pdo->prepare("SELECT * FROM favoris WHERE user_id = :user_id AND recette_id = :recette_id");
-        $requete->bindParam(':user_id', $id_utilisateur);
-        $requete->bindParam(':recette_id', $id_recette);
-        $requete->execute();
+        $ajout = $this->favoriModel->findBy(['user_id' => $id_utilisateur, 'recette_id' => $id_recette]);
         
-        if (!$requete->fetch()) {
+        if (count($ajout) == 0) {
             // l'utilisateur n'a pas déjà ajouté cette recette à ses favoris, on l'ajoute
-            $requete = $pdo->prepare("INSERT INTO favoris (user_id, recette_id, create_time) VALUES (:user_id, :recette_id, NOW())");
-            $requete->bindParam(':user_id', $id_utilisateur);
-            $requete->bindParam(':recette_id', $id_recette);
-            $requete->execute();
+            $ajoutOk = $this->favoriModel->add($id_utilisateur, $id_recette);
+
+            if (!$ajoutOk) {
+                $_SESSION['message'] = ['error' => 'Erreur lors de l\'ajout aux favoris'];
+            } else {
             $_SESSION['message'] = ['success' => 'Recette ajoutée aux favoris'];
+            }    
 
         } else {
             // l'utilisateur a déjà ajouté cette recette à ses favoris, on le supprime des favoris
-            $requete = $pdo->prepare("DELETE FROM favoris WHERE user_id = :user_id AND recette_id = :recette_id");
-            $requete->bindParam(':user_id', $id_utilisateur);
-            $requete->bindParam(':recette_id', $id_recette);
-            $requete->execute();
+            $supprimerOk = $this->favoriModel->delete($ajout[0]['id']);
+            if (!$supprimerOk) {
+                $_SESSION['message'] = ['error' => 'Erreur lors de la suppression des favoris'];
+            } else {
             $_SESSION['message'] = ['success' => 'Recette supprimée des favoris'];
+            }
         }
 
         // redirection vers la page de la recette pour afficher un message de confirmation
@@ -35,15 +46,12 @@ class FavoriController {
     }
 
     // Fonction permettant de vérifier si une recette est déjà dans les favoris d'un utilisateur
-    function existe($pdo,$id_recette, $id_utilisateur)
+    function existe($id_recette, $id_utilisateur)
     { 
         // récupération de l'id de l'utilisateur connecté
-        $requete = $pdo->prepare("SELECT * FROM favoris WHERE user_id = :user_id AND recette_id = :recette_id");
-        $requete->bindParam(':user_id', $id_utilisateur);
-        $requete->bindParam(':recette_id', $id_recette);
-        $requete->execute();
+        $favori = $this->favoriModel->findBy(['user_id' => $id_utilisateur, 'recette_id' => $id_recette]);
 
-        return $requete->fetch();
+        return count($favori) > 0;
     }
 
     function mesRecettesFavoris() {
@@ -51,11 +59,14 @@ class FavoriController {
     }
 
     // Fonction permettant de récupérer les recettes favorites d'un utilisateur
-    function getFavoris($pdo, $id_utilisateur) {
-        $requete = $pdo->prepare("SELECT r.* FROM favoris f JOIN recettes r ON f.recette_id = r.id WHERE f.user_id = :user_id");
-        $requete->bindParam(':user_id', $id_utilisateur);
-        $requete->execute();
-        echo json_encode($requete->fetchAll(PDO::FETCH_ASSOC));
+    function getFavoris($id_utilisateur) {
+        $favoris = $this->favoriModel->findBy(['user_id' => $id_utilisateur]);
+        $recettesFavori = [];
+        foreach ($favoris as $favori) {
+            $recette = $this->recetteModel->find($favori['recette_id']);
+            $recettesFavori[] = $recette;
+        }
+        echo json_encode($recettesFavori);
     }
 
 }

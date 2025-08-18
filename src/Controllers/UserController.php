@@ -1,6 +1,14 @@
 <?php
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'User.php';
+
 class UserController {
+
+    private $userModel;
+    
+    public function __construct() {
+        $this->userModel = new User();
+    }
 
     // Fonction permettant d'ajouter un nouvel utilisateur
     function inscription() {
@@ -8,7 +16,7 @@ class UserController {
     }
 
     // Fonction permettant d'enregistrer un nouvel utilisateur
-    function enregistrer($pdo) {
+    function enregistrer() {
 
         // récupération des données de formulaire
         $identifiant = $_POST['identifiant'];
@@ -17,15 +25,8 @@ class UserController {
 
         // préparation de la requête d'insertion dans la base de données
 
-        // création ou modification d'une recette
-        /** @var PDO $pdo **/
-        $requete = $pdo->prepare("INSERT INTO users (identifiant, password, mail, create_time) VALUES (:identifiant, :password, :mail, NOW())");
-        $requete->bindParam(':identifiant', $identifiant);
-        $requete->bindParam(':password', $pwd);
-        $requete->bindParam(':mail', $mail);
-        
-        // exécution de la requête
-        $ajoutOk = $requete->execute();
+        // création de l'utilisateur
+        $ajoutOk = $this->userModel->add($identifiant, $pwd, $mail);
         
         if($ajoutOk) {
             // redirection vers la vue d'enregistrement effectué
@@ -41,16 +42,17 @@ class UserController {
     }
 
     // Fonction permettant de vérifier la connexion d'un utilisateur
-    function verifieConnexion($pdo) {
+    function verifieConnexion() {
         // récupération des données de formulaire
         $identifiant = $_POST['identifiant'];
         $pwd = $_POST['pwd'];
         
         // requête de vérification de l'identifiant
-        $requete = $pdo->prepare("SELECT * FROM users WHERE identifiant = :identifiant");
-        $requete->bindParam(':identifiant', $identifiant);
-        $requete->execute();
-        $user = $requete->fetch(PDO::FETCH_ASSOC);
+        // on cherche l'utilisateur par son identifiant
+        // attention au piège, il faut utiliser findBy pour récupérer l'utilisateur
+        // car find a besoin de l'id, par contre, findBy renvoie un tableau d'utilisateurs
+        // et on prend le alors que le premier utilisateur trouvé d'où le [0]
+        $user = $this->userModel->findBy(['identifiant' => $identifiant])[0];
         
         // si l'utilisateur existe et le mot de passe est correct
         if($user && password_verify($pwd, $user['password'])) {
@@ -68,15 +70,12 @@ class UserController {
         }
     }
 
-    function profil($pdo) {
+    function profil() {
         // récupération des données de l'utilisateur courant
         $id = $_SESSION['id'];
         
         // requête de récupération des données de l'utilisateur
-        $requete = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-        $requete->bindParam(':id', $id);
-        $requete->execute();
-        $user = $requete->fetch(PDO::FETCH_ASSOC);
+        $user = $this->userModel->find($id);
         
         // affichage du profil de l'utilisateur courant
         require_once __DIR__. DIRECTORY_SEPARATOR. '..'. DIRECTORY_SEPARATOR. 'Views'. DIRECTORY_SEPARATOR. 'User' . DIRECTORY_SEPARATOR. 'profil.php';
