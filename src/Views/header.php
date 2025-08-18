@@ -32,11 +32,11 @@
                         Bienvenue <?php echo $_SESSION['identifiant'];?>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-link" href='?c=User&a=afficherProfil'>Mon profil</a></li>
+                        <li><a class="nav-link" href='?c=User&a=profil'>Mon profil</a></li>
                         <li><a class="nav-link" href='?c=Recette&a=ajouter'>Ajouter une recette</a></li>
-                        <li><a class="nav-link" href='?c=Favori&a=index'>Mes recettes favorites</a></li>
+                        <li><a class="nav-link" href='?c=Favori&a=mesFavoris'>Mes recettes favorites</a></li>
                         <?php if($_SESSION['isAdmin']) {?>
-                            <li><a class="nav-link" href='?c=Comment&a=index'>Liste des commentaires</a></li>
+                            <li><a class="nav-link" href='?c=Commentaire&a=lister'>Liste des commentaires</a></li>
                         <?php } ?>
                     </ul>
                 </li>
@@ -49,10 +49,10 @@
                 </li>
             <?php } else { ?>
                 <li class="nav-item">
-                    <a class="btn btn-outline-dark" href='?c=User&a=ajouter'>Inscription</a>
+                    <a class="btn btn-outline-dark" href='?c=User&a=inscription'>Inscription</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-outline-dark" href='?c=User&a=index'>Connexion</a>
+                    <a class="btn btn-outline-dark" href='?c=User&a=connexion'>Connexion</a>
                 </li>
             <?php } ?>
         </ul>

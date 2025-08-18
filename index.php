@@ -15,10 +15,7 @@
     require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'FavoriController.php');
     
     // import de la classe CommentController
-    require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'CommentController.php');
-    
-    // connexion à la base de données
-    require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Models'.DIRECTORY_SEPARATOR.'connectDb.php');
+    require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'CommentaireController.php');
     
     // ajout de l'en tête
     if(!isset($_GET["x"])) require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR.'header.php');
@@ -29,26 +26,8 @@
 
     // définition des routes disponibles
     switch ($controller) {
-        // route pour la page d'accueil
-        case 'home':
-            require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'homeController.php');
-            break;
-        // routes pour la gestion des contacts    
-        case 'Contact':
-            $contactController = new ContactController();
-            switch ($action) {
-                case 'ajouter':
-                    $contactController->ajouter();
-                    break;
-                case 'enregistrer':
-                    $contactController->enregister($pdo);
-                    break;
-                default:
-                    $_SESSION['message'] = ['danger' => 'La page n\'existe pas'];
-                    header('Location: ?c=home');
-            }
-            break;
-        // routes pour la gestion des recettes
+
+        // route pour la gestion des recettes
         case 'Recette':
             $recetteController = new RecetteController();
             switch ($action) {
@@ -59,91 +38,106 @@
                     $recetteController->ajouter();
                     break;
                 case 'enregistrer':
-                    $recetteController->enregistrer($pdo);
-                    break;
-                case 'modifier':
-                    $recetteController->modifier($pdo, $_GET['id']);
+                    $recetteController->enregistrer();
                     break;
                 case 'detail':
-                    $recetteController->detail($pdo, $_GET['id']);
+                    $recetteController->detail(isset($_GET['id']) ? $_GET['id'] : null);
+                    break;
+                case 'modifier':
+                    $recetteController->modifier(isset($_GET['id']) ? $_GET['id'] : null);
                     break;
                 case 'supprimer':
-                    $recetteController->supprimer($pdo, $_GET['id']);
+                    $recetteController->supprimer(isset($_GET['id']) ? $_GET['id'] : null);
                     break;
                 default:
-                    $_SESSION['message'] = ['danger' => 'La page n\'existe pas'];
-                    header('Location: ?c=home');
+                    echo "Action non trouvée";
             }
             break;
-        // routes pour la gestion des favoris
-        case 'Favori':
-            $favoriController = new FavoriController();
+        // route pour la gestion des contacts
+        case 'Contact':
+            $contactController = new ContactController();
             switch ($action) {
-                case 'index':
-                    $favoriController->index();
-                    break;
                 case 'ajouter':
-                    $favoriController->ajouter($pdo, $_GET['id']);
-                    break;
-                case 'listerParUtilisateur':
-                    $favoriController->listerParUtilisateur($pdo, $_SESSION['id']);
-                    break;
-                default:
-                    $_SESSION['message'] = ['danger' => 'La page n\'existe pas'];
-                    header('Location: ?c=home');
-            }
-            break;
-        // routes pour la gestion des commentaires
-        case 'Comment':
-            $commentController = new CommentController();
-            switch ($action) {
-                case 'index':
-                    $commentController->index($pdo);
+                    $contactController->ajouter();
                     break;
                 case 'enregistrer':
-                    $commentController->enregistrer($pdo, $_GET['id']);
-                    break;
-                case 'listerParRecette':
-                    $commentController->listerParRecette($pdo, $_GET['id']);
-                    break;
-                case 'supprimer':
-                    $commentController->supprimer($pdo, $_GET['id']);
+                    $contactController->enregister();
                     break;
                 default:
-                    $_SESSION['message'] = ['danger' => 'La page n\'existe pas'];
-                    header('Location: ?c=home');
+                    echo "Action non trouvée";
             }
             break;
-        // routes pour la gestion des utilisateurs
+        // route pour la gestion des utilisateurs
         case 'User':
             $userController = new UserController();
             switch ($action) {
-                case 'index':
-                    $userController->index();
+                case 'inscription':
+                    $userController->inscription();
                     break;
-                case 'ajouter':
-                    $userController->ajouter();
-                    break;
-                case 'enregistrer':
-                    $userController->enregistrer($pdo);
+                case 'inscrire':
+                    $userController->enregistrer();
                     break;
                 case 'connexion':
-                    $userController->connexion($pdo);
+                    $userController->connexion();
                     break;
-                case 'afficherProfil':
-                    $userController->afficherProfil($pdo);
+                case 'connecter':
+                    $userController->verifieConnexion();
+                    break;
+                case 'profil':
+                    $userController->profil();
                     break;
                 case 'deconnexion':
                     $userController->deconnexion();
                     break;
                 default:
-                    $_SESSION['message'] = ['danger' => 'La page n\'existe pas'];
-                    header('Location: ?c=home');
+                    echo "Page non trouvée";
+                    break;
             }
             break;
+        // route pour la gestion des utilisateurs
+        case 'Favori':
+            $favoriController = new FavoriController;
+            switch ($action) {
+                case 'ajouter':
+                    $favoriController = new FavoriController();
+                    $favoriController->ajouter($_GET['id']);
+                    break;
+                case 'mesFavoris':
+                    $favoriController = new FavoriController();
+                    $favoriController->mesRecettesFavoris();
+                    break;
+                case 'getFavoris':
+                    $favoriController = new FavoriController();
+                    $favoriController->getFavoris($_GET['id']);
+                    break;
+                default:
+                    echo "Page non trouvée";
+            }
+            break;
+        // route pour la gestion des commentaires
+        case 'Commentaire':
+            $commentaireController = new CommentaireController();
+            switch ($action) {
+                case 'ajouter':
+                    $commentaireController->ajouter($_GET['id']);
+                    break;
+                case 'lister':
+                    $commentaireController->getAll();
+                    break;
+                case 'supprimer':
+                    $commentaireController->supprimer($_GET['id']);
+                    break;
+                default:
+                    echo "Page non trouvée";
+            }
+            break;
+        // route pour la page d'accueil
+        case 'home':
+            require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'homeController.php');
+            break;
+        // route par défaut
         default:
-            $_SESSION['message'] = ['danger' => 'La page n\'existe pas'];
-            header('Location: ?c=home');
+            echo "Page non trouvée";
     }
     
     // ajout du pied de page
