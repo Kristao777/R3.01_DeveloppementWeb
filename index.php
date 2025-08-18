@@ -32,7 +32,7 @@
             $recetteController = new RecetteController();
             switch ($action) {
                 case 'index':
-                    $recetteController->index($pdo);
+                    $recetteController->index();
                     break;
                 case 'ajouter':
                     $recetteController->ajouter();

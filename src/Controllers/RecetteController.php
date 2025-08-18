@@ -70,8 +70,15 @@ class RecetteController {
 
     // Fonction permettant de lister les recettes
     function index() {
-        // préparation de la requête d'insertion dans la base de données
-        $recipes = $this->recetteModel->findAll();
+
+         // verifier l'existence d'un filtre des recettes par type de plat
+        if (isset($_GET['filtre']) && $_GET['filtre']!= 'all') {
+            $params = ['type_plat' => $_GET['filtre']];
+            $recipes = $this->recetteModel->findBy($params);
+        } else {
+            // si aucun filtre n'est appliqué, on récupère toutes les recettes
+            $recipes = $this->recetteModel->findAll();
+        }
 
         require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR .'liste.php');
     }
