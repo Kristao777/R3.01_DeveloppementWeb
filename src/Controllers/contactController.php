@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Contact.php';
+namespace App\R301\Controller;
+
+use App\R301\Model\Contact;
 
 class ContactController {
 

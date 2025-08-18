@@ -1,9 +1,12 @@
 <?php
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Recette.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Favori.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Commentaire.php';
+namespace App\R301\Controller;
 
+use App\R301\Model\Recette;
+use App\R301\Model\Favori;
+use App\R301\Model\Commentaire;
+use App\R301\Controller\FavoriController;
+use App\R301\Controller\CommentaireController;
 
 class RecetteController {
 

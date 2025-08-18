@@ -1,6 +1,9 @@
 <?php
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'Database.php';
+namespace App\R301\Model;
+
+use App\R301\Model\Database;
+use PDO;
 
 class Recette {
     private $conn;

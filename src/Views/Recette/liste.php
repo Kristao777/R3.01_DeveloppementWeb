@@ -1,3 +1,7 @@
+<?php
+  Use App\R301\Controller\FavoriController;
+?>
+
 <h1>Recettes</h1>
 
 <div class="row">

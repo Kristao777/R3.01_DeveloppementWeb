@@ -2,21 +2,16 @@
 
     session_start();
 
-    // import de la classe RecetteController
-    require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'RecetteController.php');
+    require 'vendor/autoload.php';
+
+    // inclusion des contrôleurs
     
-    // import de la classe ContactController
-    require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'ContactController.php');
-    
-    // import de la classe UserController
-    require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'UserController.php');
-    
-    // import de la classe FavoriController
-    require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'FavoriController.php');
-    
-    // import de la classe CommentController
-    require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'CommentaireController.php');
-    
+    Use App\R301\Controller\RecetteController;
+    Use App\R301\Controller\ContactController;
+    Use App\R301\Controller\UserController;
+    Use App\R301\Controller\FavoriController;
+    Use App\R301\Controller\CommentaireController;
+
     // ajout de l'en tête
     if(!isset($_GET["x"])) require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR.'header.php');
 
