@@ -62,8 +62,7 @@ class Recette {
         $stmt->bindParam(':auteur', $auteur);
         $stmt->bindParam(':type_plat', $type_plat);
         $stmt->bindParam(':image', $image);
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
+        return $stmt->execute();
     }
 
     public function delete($id) {
