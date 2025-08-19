@@ -39,6 +39,7 @@ class RecetteController {
         $titre = $_POST['titre'];
         $description = $_POST['description'];
         $auteur = $_POST['auteur'];
+        $typePlat = $_POST['type'];
 
         // l'ancienne image est conservée si aucune n'a été choisie
         // sinon, une nouvelle image est créée (erreur 4 = image non choisie)
@@ -57,10 +58,10 @@ class RecetteController {
         // création ou modification d'une recette
         if (isset($_GET['id'])) {
             // modification d'une recette
-            $ajoutOk = $this->recetteModel->update($_GET['id'], $titre, $description, $auteur, $image);
+            $ajoutOk = $this->recetteModel->update($_GET['id'], $titre, $description, $auteur, $typePlat,$image);
         } else {
             // création d'une nouvelle recette
-            $ajoutOk = $this->recetteModel->add($titre, $description, $auteur, $image);
+            $ajoutOk = $this->recetteModel->add($titre, $description, $auteur, $typePlat,$image);
         }
         
         if($ajoutOk) {
