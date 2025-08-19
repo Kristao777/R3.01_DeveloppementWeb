@@ -57,8 +57,7 @@ class Recette {
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':auteur', $auteur);
         $stmt->bindParam(':image', $image);
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
+        return $stmt->execute();
     }
 
     public function delete($id) {
