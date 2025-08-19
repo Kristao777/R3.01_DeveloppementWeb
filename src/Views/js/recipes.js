@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Crée un élément <form>
         let formComment = document.createElement('form');
         formComment.method = 'post';
-        formComment.action = '?c=Comment&a=ajouter&id=' + btAjoutCommentaire.dataset.id;  // Action du formulaire
+        formComment.action = '?c=Commentaire&a=ajouter&id=' + btAjoutCommentaire.dataset.id;  // Action du formulaire
 
         // Créer un textarea
         let textarea = document.createElement('textarea');

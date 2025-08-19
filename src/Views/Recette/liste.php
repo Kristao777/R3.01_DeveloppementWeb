@@ -1,4 +1,9 @@
+<?php
+  Use App\R301\Controller\FavoriController;
+?>
+
 <h1>Recettes</h1>
+
 <div class="row">
   <div class="col-6 mb-3">
     <div class="card recipe-filter bg-primary-subtle active" data-filter="all">
@@ -37,7 +42,7 @@
             <?php if(isset($_SESSION['identifiant'])) {?> 
                 <a href="?c=Recette&a=modifier&id=<?php echo $recipe['id']; ?>"><i class="bi bi-pencil-square"></i></a>
                 <?php $favorisController = new FavoriController(); ?>
-                <?php $existe = $favorisController->existe($pdo,$recipe['id'],$_SESSION['id']); ?>
+                <?php $existe = $favorisController->existe($recipe['id'],$_SESSION['id']); ?>
                 <?php if(!$existe) { ?>
                     <span class="recipefav"  data-id="<?php echo $recipe['id']; ?>" title="Mettre en favoris"><i class="bi bi-heart"></i></span>
                 <?php } else { ?>
