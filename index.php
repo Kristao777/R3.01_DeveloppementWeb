@@ -45,7 +45,9 @@
                     $recetteController->supprimer(isset($_GET['id']) ? $_GET['id'] : null);
                     break;
                 default:
-                    echo "Action non trouvée";
+                    $_SESSION['message'] = ['danger' => 'Page non trouvée'];
+                    header('Location: ?c=home');
+                    break;
             }
             break;
         // route pour la gestion des contacts
@@ -59,7 +61,9 @@
                     $contactController->enregister();
                     break;
                 default:
-                    echo "Action non trouvée";
+                    $_SESSION['message'] = ['danger' => 'Page non trouvée'];
+                    header('Location: ?c=home');
+                    break;
             }
             break;
         // route pour la gestion des utilisateurs
@@ -85,7 +89,8 @@
                     $userController->deconnexion();
                     break;
                 default:
-                    echo "Page non trouvée";
+                    $_SESSION['message'] = ['danger' => 'Page non trouvée'];
+                    header('Location: ?c=home');
                     break;
             }
             break;
@@ -106,7 +111,9 @@
                     $favoriController->getFavoris($_GET['id']);
                     break;
                 default:
-                    echo "Page non trouvée";
+                    $_SESSION['message'] = ['danger' => 'Page non trouvée'];
+                    header('Location: ?c=home');
+                    break;
             }
             break;
         // route pour la gestion des commentaires
@@ -123,7 +130,9 @@
                     $commentaireController->supprimer($_GET['id']);
                     break;
                 default:
-                    echo "Page non trouvée";
+                    $_SESSION['message'] = ['danger' => 'Page non trouvée'];
+                    header('Location: ?c=home');
+                    break;
             }
             break;
         // route pour la page d'accueil
@@ -132,7 +141,9 @@
             break;
         // route par défaut
         default:
-            echo "Page non trouvée";
+            $_SESSION['message'] = ['danger' => 'Page non trouvée'];
+            header('Location: ?c=home');
+            break;
     }
     
     // ajout du pied de page
