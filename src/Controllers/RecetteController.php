@@ -1,45 +1,24 @@
 <?php
 
+namespace App\R301\Controller;
+
+use App\R301\Model\Recette;
+use App\R301\Model\Favori;
+use App\R301\Model\Commentaire;
+use App\R301\Controller\FavoriController;
+use App\R301\Controller\CommentaireController;
+use PDO;
+
 class RecetteController { 
 
-    // Fonction permettant de lister les recettes
-    function index($pdo) {
+    private $recetteModel;
+    private $favoriModel;
+    private $commentaireModel;
 
-        // préparation de la requête d'insertion dans la base de données
-
-        /** @var PDO $pdo **/
-        // verifier l'existence d'un filtre des recettes par type de plat
-        if (isset($_GET['filtre']) && $_GET['filtre']!= 'all') {
-            $isAdmin = isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] ? '' : ' AND isApproved = 1';
-            $requete = $pdo->prepare("SELECT * FROM recettes WHERE type_plat = :type".$isAdmin);
-            $requete->bindParam(':type', $_GET['filtre']);
-        } else {
-            $isAdmin = isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] ? '' : ' WHERE isApproved = 1';
-            $requete = $pdo->prepare("SELECT * FROM recettes".$isAdmin);
-        }
-        
-        // exécution de la requête et récupération des données
-        $requete->execute();
-        $recipes = $requete->fetchAll(PDO::FETCH_ASSOC);
-
-        require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR .'liste.php');
-    }
-
-    // Fonction permettant de lister les recettes
-    function indexJson($pdo) {
-
-        // préparation de la requête d'insertion dans la base de données
-
-        /** @var PDO $pdo **/
-        $isAdmin = isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] ? '' : ' WHERE isApproved = 1';
-        $requete = $pdo->prepare("SELECT * FROM recettes".$isAdmin);
-        
-        // exécution de la requête et récupération des données
-        $requete->execute();
-        $recipes = $requete->fetchAll(PDO::FETCH_ASSOC);
-        // Renvoyer les données au format JSON
-        header('Content-Type: application/json');
-        echo json_encode($recipes);
+    public function __construct() {
+        $this->recetteModel = new Recette();
+        $this->favoriModel = new Favori();
+        $this->commentaireModel = new Commentaire();
     }
 
     // Fonction permettant d'ajouter une nouvelle recette
@@ -48,21 +27,15 @@ class RecetteController {
         require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'Recette' . DIRECTORY_SEPARATOR . 'ajout.php';
     }
 
-    function modifier($pdo) {
+    function modifier() {
 
-        /** @var PDO $pdo **/
-        $requete = $pdo->prepare("SELECT * FROM recettes WHERE id = :id");
-        $requete->bindParam(':id', $_GET['id']);
-        
-        // exécution de la requête et récupération des données
-        $requete->execute();
-        $recipe = $requete->fetch(PDO::FETCH_ASSOC);
+        $recipe = $this->recetteModel->find($_GET['id']);
 
         require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'Recette' . DIRECTORY_SEPARATOR . 'modif.php';
     }
 
     // Fonction permettant d'enregistrer une nouvelle recette
-    function enregistrer($pdo) {
+    function enregistrer() {
 
         // récupération des données de formulaire
         $titre = $_POST['titre'];
@@ -74,10 +47,7 @@ class RecetteController {
         // l'ancienne image est conservée si aucune n'a été choisie
         // sinon, une nouvelle image est créée (erreur 4 = image non choisie)
         if($_FILES['image']['error'] == 4) {
-            $requete = $pdo->prepare("SELECT * FROM recettes WHERE id = :id");
-            $requete->bindParam(':id', $_GET['id']);
-            $requete->execute();
-            $recipe = $requete->fetch(PDO::FETCH_ASSOC);
+            $recipe = $this->recetteModel->find($_GET['id']);
             $image = $recipe['image'];
         } else {
             $image = $_FILES['image']['name'];
@@ -89,106 +59,120 @@ class RecetteController {
         // préparation de la requête d'insertion dans la base de données
 
         // création ou modification d'une recette
-        /** @var PDO $pdo **/
         if (isset($_GET['id'])) {
             // modification d'une recette
-            $requete = $pdo->prepare("UPDATE recettes SET titre = :titre, description = :description, auteur = :auteur, type_plat = :type_plat , image = :image, isApproved = :isApproved WHERE id = :id");
-            $requete->bindParam(':id', $_GET['id']);
+            $ajoutOk = $this->recetteModel->update($_GET['id'], $titre, $description, $auteur, $typePlat, $image);
         } else {
             // création d'une nouvelle recette
-            $requete = $pdo->prepare("INSERT INTO recettes (titre, description, auteur, type_plat, image, isApproved, date_creation) VALUES (:titre, :description, :auteur, :type_plat, :image, :isApproved, NOW())");
+            $ajoutOk = $this->recetteModel->add($titre, $description, $auteur, $typePlat, $image, $isApproved);
         }
-        $requete->bindParam(':titre', $titre);
-        $requete->bindParam(':description', $description);
-        $requete->bindParam(':auteur', $auteur);
-        $requete->bindParam(':type_plat', $typePlat);
-        $requete->bindParam(':image', $image);
-        $requete->bindParam(':isApproved', $isApproved);
-
-        // exécution de la requête
-        $ajoutOk = $requete->execute();
         
         if($ajoutOk) {
             // redirection vers la vue d'enregistrement effectué
             require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' .DIRECTORY_SEPARATOR.'enregistrement.php');
         } else {
-            $_SESSION['message'] = ['danger' => 'Erreur d\'enregistrement de la recette'];
+            echo 'Erreur lors de l\'enregistrement de la recette.';
         }
     }
 
-    function detail($pdo, $id) {
+    // Fonction permettant de lister les recettes
+    function index() {
+
+         // verifier l'existence d'un filtre des recettes par type de plat
+        if (isset($_GET['filtre']) && $_GET['filtre']!= 'all') {
+            $params = ['type_plat' => $_GET['filtre'], 'isApproved' => 1];
+            if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']) {
+                // si l'utilisateur est admin, on ajoute le filtre isApproved
+                $params['isApproved'] = 1;
+            }
+            $recipes = $this->recetteModel->findBy($params);
+        } else {
+            // si aucun filtre n'est appliqué, on récupère toutes les recettes
+            $recipes = $this->recetteModel->findAll();
+        }
+
+        // vérifier l'existence d'un filtre des recettes par type de plat et du rôle administrateur pour afficher uniquement les recettes approuvées
+        $params = [];
+        if (isset($_SESSION['isAdmin']) && !$_SESSION['isAdmin'] || !isset($_SESSION['isAdmin'])) {
+            $params = array_merge($params,['isApproved' => 1]); // si l'utilisateur n'est pas admin, on affiche que les recettes approuvées
+        }
+
+        if (isset($_GET['filtre']) && $_GET['filtre']!= 'all') {
+            $params = array_merge($params,['type_plat' => $_GET['filtre']]);
+        }
+
+        $recipes = count($params) == 0 ? $this->recetteModel->findAll() : $this->recetteModel->findBy($params);
+
+        require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR .'liste.php');
+    }
+
+        // Fonction permettant de lister les recettes
+    function indexJson() {
+
+        // Lister toutes les recettes
+        $recipes = $this->recetteModel->findAll();
+
+        // Renvoyer les données au format JSON
+        header('Content-Type: application/json');
+        echo json_encode($recipes);
+    }
+
+    function detail($id) {
 
         // Ajout du contrôleur des favoris
         $favoriController = new FavoriController();
-        $existe = $favoriController->existe($pdo, $id, isset($_SESSION['id']) ? $_SESSION['id']:null);
+        $existe = $favoriController->existe($id, isset($_SESSION['id']) ? $_SESSION['id']:null);
         
         // préparation de la requête de sélection dans la base de données
-
-        /** @var PDO $pdo **/
-        $requete = $pdo->prepare("SELECT * FROM recettes WHERE id = :id");
-        $requete->bindParam(':id', $id);
-        
-        // exécution de la requête et récupération des données
-        $requete->execute();
-        $recipe = $requete->fetch(PDO::FETCH_ASSOC);
+        $recipe = $this->recetteModel->find($id);
 
         // Ajout des commentaires
-        $commentaireController = new CommentController();
-        $commentaires = $commentaireController->listerParRecette($pdo, $id);
+        $commentaireController = new CommentaireController();
+        $commentaires = $commentaireController->lister($id);
 
         require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR .'detail.php');
     }
 
     // Fonction permettant de supprimer une recette
-    function supprimer($pdo, $id) {
+    function supprimer($id) {
 
         // Suppression des favoris liés à la recette
-        $requete = $pdo->prepare("DELETE FROM favoris WHERE recette_id = :id");
-        $requete->bindParam(':id', $id);
-        
-        // exécution de la requête
-        $suppressionOk = $requete->execute();
-
+        $favoris = $this->favoriModel->findBy(['recette_id' => $id]);
+        foreach ($favoris as $favori) {
+            $this->favoriModel->delete($favori['id']);
+        }
         // Suppression des commentaires liés à la recette
-        $requete = $pdo->prepare("DELETE FROM comments WHERE recette_id = :id");
-        $requete->bindParam(':id', $id);
-        
-        // exécution de la requête
-        $suppressionOk = $requete->execute();
-
+        $comments = $this->commentaireModel->findBy(['recette_id' => $id]);
+        foreach ($comments as $comment) {
+            $this->commentaireModel->delete($comment['id']);
+        }
         // préparation de la requête de suppression dans la base de données
-        $requete = $pdo->prepare("DELETE FROM recettes WHERE id = :id");
-        $requete->bindParam(':id', $id);
+        $suppressionOk = $this->recetteModel->delete($id);
         
-        // exécution de la requête
-        $suppressionOk = $requete->execute();
-        
+        // Si la suppression est réussie, on redirige vers la liste des recettes
+        // Sinon, on affiche un message d'erreur
         if($suppressionOk) {
             $_SESSION['message'] = ['success' => 'Recette supprimée avec succès'];
 
             // redirection vers la vue de suppression effectuée
-            require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR.'liste.php');
+            header('Location: ?c=Recette&a=index');
         } else {
-            $_SESSION['message'] = ['danger' => 'Erreur dans la suppression de la recette'];
+            $_SESSION['message'] = ['danger' => 'Erreur dans la suppression de la recette'];;
         }
     }
 
-    // Fonction permettant de lister les recettes a approuver
-    function aApprouver($pdo) {
-        // préparation de la requête de sélection dans la base de données
-        $requete = $pdo->prepare("SELECT * FROM recettes WHERE isApproved = 0");
-        
-        // exécution de la requête et récupération des données
-        $requete->execute();
-        $recipes = $requete->fetchAll(PDO::FETCH_ASSOC);
+        // Fonction permettant de lister les recettes a approuver
+    function aApprouver() {
+
+        $recipes = $this->recetteModel->findBy(['isApproved' => 0]);
         
         require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR.'aApprouver.php');
     }
 
     // Fonction permettant de valider une recette
-    function valider($pdo, $id) {
+    function valider($id) {
         // préparation de la requête de mise à jour dans la base de données
-        $requete = $pdo->prepare("UPDATE recettes SET isApproved = 1 WHERE id = :id");
+        $requete = $this->recetteModel->getConnection()->prepare("UPDATE recettes SET isApproved = 1 WHERE id = :id");
         $requete->bindParam(':id', $id);
         
         // exécution de la requête
@@ -205,10 +189,10 @@ class RecetteController {
     }
 
     // Fonction permettant de compter le nombre de recettes non validées
-    function nbAValider($pdo) {
+    function nbAValider() {
         if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']) {
             // préparation de la requête de sélection dans la base de données
-            $requete = $pdo->prepare("SELECT COUNT(*) as nbRecettesNonValides FROM recettes WHERE isApproved = 0 OR isApproved IS NULL");
+            $requete = $this->recetteModel->getConnection()->prepare("SELECT COUNT(*) as nbRecettesNonValides FROM recettes WHERE isApproved = 0 OR isApproved IS NULL");
                     
             // exécution de la requête et récupération des données
             $requete->execute();
@@ -222,9 +206,9 @@ class RecetteController {
     }
 
     // Fonction permettant de lister les recettes non valides concernant un utilisateur
-    function nonValidesPourUtilisateur($pdo, $idUtilisateur) {
+    function nonValidesPourUtilisateur($idUtilisateur) {
         // préparation de la requête de sélection dans la base de données
-        $requete = $pdo->prepare("SELECT r.* FROM recettes r JOIN users u ON r.auteur = u.mail WHERE u.id = :idUtilisateur AND r.isApproved = 0");
+        $requete = $this->recetteModel->getConnection()->prepare("SELECT r.* FROM recettes r JOIN users u ON r.auteur = u.mail WHERE u.id = :idUtilisateur AND r.isApproved = 0");
         $requete->bindParam(':idUtilisateur', $idUtilisateur);
         
         // exécution de la requête et récupération des données
@@ -233,4 +217,5 @@ class RecetteController {
         
         require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR. 'Recette' . DIRECTORY_SEPARATOR.'enCoursValidation.php');
     }
+
 }

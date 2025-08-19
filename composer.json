@@ -1,0 +1,19 @@
+{
+    "name": "app/r301",
+    "autoload": {
+        "psr-4": {
+            "App\\R301\\": "src/",
+            "App\\R301\\Controller\\": "src/Controllers/",
+            "App\\R301\\Model\\": "src/Models/"
+        }
+    },
+    "authors": [
+        {
+            "name": "kristao",
+            "email": "kristao777@gmail.com"
+        }
+    ],
+    "require": {
+        "monolog/monolog": "^3.9"
+    }
+}

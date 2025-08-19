@@ -1,6 +1,7 @@
 // Écoute le chargement du DOM
 document.addEventListener('DOMContentLoaded', () => {
 
+
     /* Ajout partie de l'affichage du profil utilisateur */
 
     // Sélection du profil identifiant (contenu modifiable)
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let id_utilisateur = divFavoris.dataset.id; // Remplacer par l'ID de l'utilisateur
 
-        fetch("?c=Favori&a=listerParUtilisateur&x&id="+id_utilisateur)
+        fetch("?c=Favori&a=getFavoris&x&id="+id_utilisateur)
         .then(response => response.json())
         .then(response => {
             JSON.stringify(response);
@@ -60,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // Gestion des notifications en cas de commentaires à valider
-    fetch("?c=Comment&a=nbAValider&x")
+    fetch("?c=Commentaire&a=nbAValider&x")
     .then(response => response.text())
     .then(response => {
         if(parseInt(response) > 0) {

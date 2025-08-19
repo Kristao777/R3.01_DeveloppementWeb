@@ -4,7 +4,7 @@
     <!-- Boucle permettant de lister les recettes -->
     <?php foreach ($commentaires as $commentaire) : ?>
         <div class="col-4 p-2">
-            <a href="?c=Comment&a=supprimer&id=<?php echo $commentaire['id']; ?>"><i class="bi bi-trash"></i></a>
+            <a href="?c=Commentaire&a=supprimer&id=<?php echo $commentaire['id']; ?>"><i class="bi bi-trash"></i></a>
             <!-- Utilisation des Cards Bootstrap -->
             <div class="comment card" data-id="<?php echo $commentaire['id']; ?>">
                 <div class="card-body">
