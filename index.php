@@ -11,7 +11,18 @@
     Use App\R301\Controller\UserController;
     Use App\R301\Controller\FavoriController;
     Use App\R301\Controller\CommentaireController;
-    
+
+    use Monolog\Level;
+    use Monolog\Logger;
+    use Monolog\Handler\StreamHandler;
+    use Monolog\Handler\FirePHPHandler;
+
+    // Create the logger
+    $logger = new Logger('app_log');
+    // Now add some handlers
+    $logger->pushHandler(new StreamHandler(__DIR__. DIRECTORY_SEPARATOR . 'log'. DIRECTORY_SEPARATOR .'app.log', Level::Debug));
+    $logger->pushHandler(new FirePHPHandler());
+
     // ajout de l'en tête
     if(!isset($_GET["x"])) require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Views'.DIRECTORY_SEPARATOR.'header.php');
 
@@ -83,12 +94,18 @@
                     $userController->connexion();
                     break;
                 case 'connecter':
+
+                    $logger->info("l'utilisateur ".$_POST['identifiant']. " s'est connecté");
+
                     $userController->verifieConnexion();
                     break;
                 case 'profil':
                     $userController->profil();
                     break;
                 case 'deconnexion':
+
+                    $logger->info("l'utilisateur ".$_SESSION['identifiant']. " s'est déconnecté");
+
                     $userController->deconnexion();
                     break;
                 default:
@@ -140,6 +157,7 @@
             break;
         // route pour la page d'accueil
         case 'home':
+
             require_once(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'homeController.php');
             break;
         // route par défaut
